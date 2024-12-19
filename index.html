@@ -2,19 +2,13 @@
 <html>
 
 <head>
-    <!-- Manrope font from Framer -->
-    <link href="https://api.fontshare.com/v2/css?f[]=manrope@700&display=swap" rel="stylesheet">
+    <link href="https://api.fontshare.com/v2/css?f[]=inter@600&display=swap" rel="stylesheet">
     <style>
         @font-face {
-            font-family: 'Manrope';
-            font-weight: 700;
+            font-family: 'Inter';
+            font-weight: 600;
             font-display: swap;
-            src: url('https://framerusercontent.com/assets/0kF4T3RnZOnV9U7GQD3JjzpUxE.ttf') format('truetype');
-        }
-
-        :root {
-            --token-2507b644-ca70-48b4-8a80-9e3124a5c985: rgb(250, 250, 250);
-            --token-2e55662e-d6bf-4329-b432-3c735e37723b: rgb(17, 17, 17);
+            src: url('https://framerusercontent.com/assets/Inter-SemiBold.ttf') format('truetype');
         }
 
         body {
@@ -27,33 +21,24 @@
         }
 
         .framer-button {
-            background-color: var(--token-2507b644-ca70-48b4-8a80-9e3124a5c985, rgb(250, 250, 250));
+            background-color: rgb(250, 250, 250);
             border-radius: 50px;
             opacity: 1;
             cursor: pointer;
             padding: 12px 24px;
-        }
-
-        .framer-container {
-            outline: none;
+            border: none;
+            font-family: "Inter", "Inter Placeholder", sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: rgb(17, 17, 17);
+            text-align: center;
             display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            flex-shrink: 0;
-            --extracted-r6o4lv: var(--variable-reference-oPPvRVjNa-lpvuElQK4);
-            --framer-paragraph-spacing: 0px;
-            --variable-reference-gJtx4y_sc-lpvuElQK4: var(--token-2e55662e-d6bf-4329-b432-3c735e37723b, rgb(17, 17, 17));
-            --variable-reference-oPPvRVjNa-lpvuElQK4: var(--token-2e55662e-d6bf-4329-b432-3c735e37723b, rgb(17, 17, 17));
-            transform: none;
-            opacity: 1;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.3s ease;
         }
 
         .framer-text {
-            --font-selector: R0Y7TWFucm9wZS03MDA=;
-            --framer-font-family: "Manrope", "Manrope Placeholder", sans-serif;
-            --framer-font-weight: 700;
-            --framer-line-height: 110%;
-            --framer-text-color: var(--extracted-r6o4lv, var(--variable-reference-oPPvRVjNa-lpvuElQK4));
             margin: 0;
         }
     </style>
@@ -84,7 +69,6 @@
             }
         }
 
-        // Listen for account changes
         if (window.ethereum) {
             window.ethereum.on('accountsChanged', function (accounts) {
                 if (accounts.length === 0) {
@@ -94,8 +78,9 @@
                 }
             });
 
-            // Check initial connection
-            window.ethereum.request({ method: 'eth_accounts' }).then(accounts => {
+            window.ethereum.request({
+                method: 'eth_accounts'
+            }).then(accounts => {
                 if (accounts.length > 0) {
                     document.getElementById("connect-text").textContent = accounts[0].slice(0, 6) + "...";
                 }
