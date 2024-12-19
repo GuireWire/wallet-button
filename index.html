@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .connect-button {
+            background-color: rgb(202, 247, 111);
+            border-radius: 50px;
+            padding: 12px 24px;
+            cursor: pointer;
+            border: none;
+            outline: none;
+            opacity: 1;
+            transition: opacity 0.2s ease;
+        }
+
+        .connect-button:hover {
+            opacity: 0.8;
+        }
+
+        .button-text {
+            font-family: 'Manrope', sans-serif;
+            font-weight: 700;
+            line-height: 110%;
+            color: rgb(17, 17, 17);
+            margin: 0;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="connect-button" onclick="connectWallet()">
+        <p class="button-text" id="connect-text">Connect</p>
+    </div>
+
+    <script>
+        async function connectWallet() {
+            const buttonText = document.getElementById("connect-text");
+            if (typeof window.ethereum !== "undefined") {
+                try {
+                    const accounts = await ethereum.request({
+                        method: "eth_requestAccounts"
+                    });
+                    buttonText.textContent = "Connected: " + accounts[0].slice(0, 6) + "...";
+                } catch (error) {
+                    console.error(error);
+                    buttonText.textContent = "Error connecting";
+                }
+            } else {
+                alert("Please install MetaMask!");
+                buttonText.textContent = "Install MetaMask";
+            }
+        }
+    </script>
+</body>
+
+</html>
