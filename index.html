@@ -67,33 +67,20 @@
     </span>
 
     <script>
-        let isConnected = false;
-
         async function handleClick() {
             if (typeof window.ethereum !== "undefined") {
                 try {
-                    // Always request accounts to force the MetaMask prompt
                     const accounts = await window.ethereum.request({
                         method: "eth_requestAccounts"
                     });
-
-                    if (!isConnected) {
-                        isConnected = true;
-                        document.getElementById("connect-text").textContent =
-                            "Disconnect (" + accounts[0].slice(0, 6) + "...)";
-                    } else {
-                        isConnected = false;
-                        document.getElementById("connect-text").textContent = "Connect";
-                    }
+                    document.getElementById("connect-text").textContent = accounts[0].slice(0, 6) + "...";
                 } catch (error) {
                     console.error("Error:", error);
-                    document.getElementById("connect-text").textContent =
-                        "Error connecting";
+                    document.getElementById("connect-text").textContent = "Connect";
                 }
             } else {
                 alert("Please install MetaMask!");
-                document.getElementById("connect-text").textContent =
-                    "Install MetaMask";
+                document.getElementById("connect-text").textContent = "Install MetaMask";
             }
         }
 
@@ -101,8 +88,16 @@
         if (window.ethereum) {
             window.ethereum.on('accountsChanged', function (accounts) {
                 if (accounts.length === 0) {
-                    isConnected = false;
                     document.getElementById("connect-text").textContent = "Connect";
+                } else {
+                    document.getElementById("connect-text").textContent = accounts[0].slice(0, 6) + "...";
+                }
+            });
+
+            // Check initial connection
+            window.ethereum.request({ method: 'eth_accounts' }).then(accounts => {
+                if (accounts.length > 0) {
+                    document.getElementById("connect-text").textContent = accounts[0].slice(0, 6) + "...";
                 }
             });
         }
