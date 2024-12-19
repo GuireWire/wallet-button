@@ -4,6 +4,11 @@
 <head>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --token-2507b644-ca70-48b4-8a80-9e3124a5c985: rgb(250, 250, 250);
+            --token-2e55662e-d6bf-4329-b432-3c735e37723b: rgb(17, 17, 17);
+        }
+
         body {
             margin: 0;
             padding: 0;
@@ -13,53 +18,75 @@
             height: 100vh;
         }
 
-        .connect-button {
-            background-color: rgb(202, 247, 111);
+        .framer-button {
+            background-color: var(--token-2507b644-ca70-48b4-8a80-9e3124a5c985, rgb(250, 250, 250));
             border-radius: 50px;
-            padding: 12px 24px;
-            cursor: pointer;
-            border: none;
-            outline: none;
             opacity: 1;
-            transition: opacity 0.2s ease;
+            cursor: pointer;
+            padding: 12px 24px;
         }
 
-        .connect-button:hover {
-            opacity: 0.8;
+        .framer-container {
+            outline: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            flex-shrink: 0;
+            --extracted-r6o4lv: var(--variable-reference-oPPvRVjNa-lpvuElQK4);
+            --framer-paragraph-spacing: 0px;
+            --variable-reference-gJtx4y_sc-lpvuElQK4: var(--token-2e55662e-d6bf-4329-b432-3c735e37723b, rgb(17, 17, 17));
+            --variable-reference-oPPvRVjNa-lpvuElQK4: var(--token-2e55662e-d6bf-4329-b432-3c735e37723b, rgb(17, 17, 17));
+            transform: none;
+            opacity: 1;
         }
 
-        .button-text {
-            font-family: 'Manrope', sans-serif;
-            font-weight: 700;
-            line-height: 110%;
-            color: rgb(17, 17, 17);
+        .framer-text {
+            --font-selector: R0Y7TWFucm9wZS03MDA=;
+            --framer-font-family: "Manrope", "Manrope Placeholder", sans-serif;
+            --framer-font-weight: 700;
+            --framer-line-height: 110%;
+            --framer-text-color: var(--extracted-r6o4lv, var(--variable-reference-oPPvRVjNa-lpvuElQK4));
             margin: 0;
-            font-size: 16px;
         }
     </style>
 </head>
 
 <body>
-    <div class="connect-button" onclick="connectWallet()">
-        <p class="button-text" id="connect-text">Connect</p>
-    </div>
+    <span class="framer-button" id="connect-btn" onclick="connectWallet()">
+        <div class="framer-container">
+            <p class="framer-text" id="connect-text">Connect</p>
+        </div>
+    </span>
 
     <script>
+        console.log("Wallet script loaded");
+
         async function connectWallet() {
-            const buttonText = document.getElementById("connect-text");
+            console.log("Connect button clicked");
+
             if (typeof window.ethereum !== "undefined") {
+                console.log("MetaMask is installed!");
+
                 try {
-                    const accounts = await ethereum.request({
+                    console.log("Requesting accounts...");
+                    const accounts = await window.ethereum.request({
                         method: "eth_requestAccounts"
                     });
-                    buttonText.textContent = "Connected: " + accounts[0].slice(0, 6) + "...";
+
+                    console.log("Connected:", accounts);
+                    document.getElementById("connect-text").textContent =
+                        "Connected: " + accounts[0].slice(0, 6) + "...";
+
                 } catch (error) {
-                    console.error(error);
-                    buttonText.textContent = "Error connecting";
+                    console.error("Error connecting:", error);
+                    document.getElementById("connect-text").textContent =
+                        "Error connecting";
                 }
             } else {
+                console.log("MetaMask not found");
                 alert("Please install MetaMask!");
-                buttonText.textContent = "Install MetaMask";
+                document.getElementById("connect-text").textContent =
+                    "Install MetaMask";
             }
         }
     </script>
