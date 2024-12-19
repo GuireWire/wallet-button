@@ -70,6 +70,21 @@
         let isConnected = false;
         let currentAccount = null;
 
+        // Check initial connection status
+        async function checkConnection() {
+            if (typeof window.ethereum !== "undefined") {
+                const accounts = await window.ethereum.request({
+                    method: "eth_accounts"  // This doesn't prompt, just checks
+                });
+                if (accounts.length > 0) {
+                    currentAccount = accounts[0];
+                    isConnected = true;
+                    document.getElementById("connect-text").textContent =
+                        "Disconnect (" + currentAccount.slice(0, 6) + "...)";
+                }
+            }
+        }
+
         async function toggleWallet() {
             if (!isConnected) {
                 await connectWallet();
@@ -101,25 +116,43 @@
         }
 
         async function disconnectWallet() {
-            isConnected = false;
-            currentAccount = null;
-            document.getElementById("connect-text").textContent = "Connect";
+            try {
+                // Clear our state
+                isConnected = false;
+                currentAccount = null;
+
+                // Reset the button text
+                document.getElementById("connect-text").textContent = "Connect";
+
+                // Force MetaMask to forget the connection
+                if (window.ethereum && window.ethereum.removeAllListeners) {
+                    window.ethereum.removeAllListeners('accountsChanged');
+                    setupAccountChangeListener(); // Reset the listener
+                }
+            } catch (error) {
+                console.error("Error disconnecting:", error);
+            }
         }
 
-        // Listen for account changes
-        if (window.ethereum) {
-            window.ethereum.on('accountsChanged', function (accounts) {
-                if (accounts.length === 0) {
-                    // User disconnected their wallet
-                    disconnectWallet();
-                } else {
-                    // Account changed, update the display
-                    currentAccount = accounts[0];
-                    document.getElementById("connect-text").textContent =
-                        "Disconnect (" + currentAccount.slice(0, 6) + "...)";
-                }
-            });
+        function setupAccountChangeListener() {
+            if (window.ethereum) {
+                window.ethereum.on('accountsChanged', function (accounts) {
+                    if (accounts.length === 0) {
+                        // User disconnected their wallet
+                        disconnectWallet();
+                    } else {
+                        // Account changed, update the display
+                        currentAccount = accounts[0];
+                        isConnected = true;
+                        document.getElementById("connect-text").textContent =
+                            "Disconnect (" + currentAccount.slice(0, 6) + "...)";
+                    }
+                });
+            }
         }
+
+        // Setup initial listeners
+        setupAccountChangeListener();
     </script>
 </body>
 
