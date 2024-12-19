@@ -2,8 +2,16 @@
 <html>
 
 <head>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@700&display=swap" rel="stylesheet">
+    <!-- Manrope font from Framer -->
+    <link href="https://api.fontshare.com/v2/css?f[]=manrope@700&display=swap" rel="stylesheet">
     <style>
+        @font-face {
+            font-family: 'Manrope';
+            font-weight: 700;
+            font-display: swap;
+            src: url('https://framerusercontent.com/assets/0kF4T3RnZOnV9U7GQD3JjzpUxE.ttf') format('truetype');
+        }
+
         :root {
             --token-2507b644-ca70-48b4-8a80-9e3124a5c985: rgb(250, 250, 250);
             --token-2e55662e-d6bf-4329-b432-3c735e37723b: rgb(17, 17, 17);
@@ -52,42 +60,65 @@
 </head>
 
 <body>
-    <span class="framer-button" id="connect-btn" onclick="connectWallet()">
+    <span class="framer-button" id="connect-btn" onclick="toggleWallet()">
         <div class="framer-container">
             <p class="framer-text" id="connect-text">Connect</p>
         </div>
     </span>
 
     <script>
-        console.log("Wallet script loaded");
+        let isConnected = false;
+        let currentAccount = null;
+
+        async function toggleWallet() {
+            if (!isConnected) {
+                await connectWallet();
+            } else {
+                await disconnectWallet();
+            }
+        }
 
         async function connectWallet() {
-            console.log("Connect button clicked");
-
             if (typeof window.ethereum !== "undefined") {
-                console.log("MetaMask is installed!");
-
                 try {
-                    console.log("Requesting accounts...");
                     const accounts = await window.ethereum.request({
                         method: "eth_requestAccounts"
                     });
-
-                    console.log("Connected:", accounts);
+                    currentAccount = accounts[0];
+                    isConnected = true;
                     document.getElementById("connect-text").textContent =
-                        "Connected: " + accounts[0].slice(0, 6) + "...";
-
+                        "Disconnect (" + currentAccount.slice(0, 6) + "...)";
                 } catch (error) {
                     console.error("Error connecting:", error);
                     document.getElementById("connect-text").textContent =
                         "Error connecting";
                 }
             } else {
-                console.log("MetaMask not found");
                 alert("Please install MetaMask!");
                 document.getElementById("connect-text").textContent =
                     "Install MetaMask";
             }
+        }
+
+        async function disconnectWallet() {
+            isConnected = false;
+            currentAccount = null;
+            document.getElementById("connect-text").textContent = "Connect";
+        }
+
+        // Listen for account changes
+        if (window.ethereum) {
+            window.ethereum.on('accountsChanged', function (accounts) {
+                if (accounts.length === 0) {
+                    // User disconnected their wallet
+                    disconnectWallet();
+                } else {
+                    // Account changed, update the display
+                    currentAccount = accounts[0];
+                    document.getElementById("connect-text").textContent =
+                        "Disconnect (" + currentAccount.slice(0, 6) + "...)";
+                }
+            });
         }
     </script>
 </body>
